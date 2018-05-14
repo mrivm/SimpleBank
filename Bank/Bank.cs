@@ -34,15 +34,65 @@ namespace Bank
         }
 
         public bool AccountTransfer(string from, string to, Double amount) {
-            return true;
+            if (from.Length == 0 || to.Length == 0) {
+                System.Console.WriteLine("Account ID's are required");
+            } else if (amount <= 0.0) {
+                System.Console.WriteLine("Amount must be positive and greater than zero");
+            } else if (from == to) {
+                System.Console.WriteLine("Accounts must be different");
+            } else if (!Accounts.ContainsKey(from) || Accounts.ContainsKey(to)) {
+                System.Console.WriteLine("Accounts must exist");
+            } else {
+                Account srcAccount = (Account) this.Accounts[from];
+                if (!srcAccount.Withdraw(amount)) {
+                    System.Console.WriteLine("Withdrawal amount greater than account balance");
+                } else {
+                    Account destAccount = (Account) this.Accounts[to];
+                    destAccount.Deposit(amount);
+                    Accounts[from] = srcAccount;
+                    Accounts[to] = destAccount;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool Deposit(string id, Double amount) {
-            return true;
+            if (id.Length == 0) {
+                System.Console.WriteLine("Account ID is required");
+            } else if (amount <= 0.0) {
+                System.Console.WriteLine("Amount must be positive and greater than zero");
+            } else if (!Accounts.ContainsKey(id)) {
+                System.Console.WriteLine("Account must exist");
+            } else {
+                Account destAccount = (Account) this.Accounts[id];
+                destAccount.Deposit(amount);
+                Accounts[id] = destAccount;
+                return true;
+            }
+
+            return false;
         }
 
         public bool Withdraw(string id, Double amount) {
-            return true;
+            if (id.Length == 0) {
+                System.Console.WriteLine("Account ID is required");
+            } else if (amount <= 0.0) {
+                System.Console.WriteLine("Amount must be positive and greater than zero");
+            } else if (!Accounts.ContainsKey(id)) {
+                System.Console.WriteLine("Account must exist");
+            } else {
+                Account destAccount = (Account) this.Accounts[id];
+                if (!destAccount.Withdraw(amount)) {
+                    System.Console.WriteLine("Withdrawal amount greater than account balance");
+                } else {
+                    Accounts[id] = destAccount;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

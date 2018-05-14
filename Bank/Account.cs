@@ -14,7 +14,7 @@ namespace Bank
         public string Id { get; }
         public Owner Owner { get; }
         public AccountType Type { get; }
-        public Double Balance { get; }
+        private Double Balance { get; set; }
 
         public Account(string id, AccountType type, Double balance, Owner owner) {
             this.Id = id;
@@ -27,6 +27,20 @@ namespace Bank
             }
 
             this.Owner = owner;
+        }
+
+        public bool Withdraw(Double amount) {
+            if (amount <= Balance && (this.Type == AccountType.INDIVIDUAL_INVESTMENT && amount <= 1000.00)) {
+                this.Balance -= amount;
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool Deposit(Double amount) {
+            this.Balance += amount;
+            return true;
         }
     }
 }

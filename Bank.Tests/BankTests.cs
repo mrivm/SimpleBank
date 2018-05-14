@@ -80,7 +80,7 @@ namespace Bank.Tests
 
         [Fact]
         public void AccountsOnTransferMustBeDifferent() {
-            bool result = _bank.AccountTransfer("1D1", "1D1", 0.0);
+            bool result = _bank.AccountTransfer("1D1", "1D1", 500.0);
             Assert.False(result, "Same ID specified on both parameters");
         }
 
@@ -123,7 +123,7 @@ namespace Bank.Tests
         [Fact]
         public void AccountDepositAmountMustBePositive() {
             bool result = _bank.Withdraw("1", -500.00);
-            Assert.False(result, "Amount must not overdraft account");
+            Assert.False(result, "Amount must be positive");
         }
 
         [Fact]
