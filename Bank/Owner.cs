@@ -6,8 +6,8 @@ namespace Bank
     {
         public string Name { get; }
 
-        public Owner() {
-             
+        public Owner(string name) {
+             this.Name = name;
         }
     }
 }
