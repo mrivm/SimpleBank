@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Bank.Tests
@@ -14,9 +15,17 @@ namespace Bank.Tests
         [Fact]
         public void BankNameIsDefined()
         {
-            string result = _bank.GetBankName();
+            string result = _bank.BankName;
 
             Assert.True(result.Length > 0, "Bank name should have alphanumeric contents");
+        }
+
+        [Fact]
+        public void BankHasAccounts()
+        {
+            List<Account> accounts = _bank.Accounts;
+
+            Assert.True(accounts.Count > 0, "Bank should have an account list");
         }
     }
 }
