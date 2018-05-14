@@ -11,13 +11,6 @@ namespace Bank
         public Bank() {
             BankName = "Simple Bank";
             Accounts = new Hashtable();
-
-            Owner bankOwner = new Owner("SimpleBank");
-
-            // Dummy bank-owned accounts
-            AddAccount("1", AccountType.CHECKING, 5000.00, bankOwner);
-            AddAccount("2", AccountType.CORPORATE_INVESTMENT, 5000.00, bankOwner);
-            AddAccount("3", AccountType.INDIVIDUAL_INVESTMENT, 5000.00, bankOwner);
         }
 
         public string AddAccount(string id, AccountType type, Double balance, Owner owner) {
@@ -41,6 +34,14 @@ namespace Bank
         }
 
         public bool AccountTransfer(string from, string to, Double amount) {
+            return true;
+        }
+
+        public bool Deposit(string id, Double amount) {
+            return true;
+        }
+
+        public bool Withdraw(string id, Double amount) {
             return true;
         }
     }
