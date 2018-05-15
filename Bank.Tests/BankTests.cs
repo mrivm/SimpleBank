@@ -131,5 +131,67 @@ namespace Bank.Tests
             bool result = _bank.Withdraw("3", 2000.00);
             Assert.False(result, "Cannot withdraw more than $1,000 at a time");
         }
+
+        [Fact]
+        public void GetAccountBalanceValidatesAccountID() {
+            Double result = _bank.GetAccountBalance("");
+            Assert.False(result > 0.0, "An Account ID must be specified");
+        }
+
+        [Fact]
+        public void GetAccountBalanceValidatesAccountExists() {
+            Double result = _bank.GetAccountBalance("NOTEXISTS123");
+            Assert.False(result > 0.0, "Cannot report balance of inexsisting account");
+        }
+
+        [Theory]
+        [InlineData("1D31", 3000.00, 50.00, 3050.00)]
+        [InlineData("1D32", 2000.00, 1000.00, 3000.00)]
+        [InlineData("1D33", 1000.00, 500.00, 1500.00)]
+        public void TestBalanceUpdateAfterDeposit(string id, Double destAcctBalance, Double depositAmount, Double updatedBalance) {
+            _bank.AddAccount(id, AccountType.CHECKING, destAcctBalance, _bankOwner);
+            Double reportedBalance = _bank.GetAccountBalance(id);
+            Assert.True(reportedBalance == destAcctBalance, "Reported amount must be the initial amount");
+
+            _bank.Deposit(id, depositAmount);
+            reportedBalance = _bank.GetAccountBalance(id);
+            Assert.True(reportedBalance == updatedBalance, "Reported amount must be the initial amount plus the deposit amount");
+        }
+
+        [Theory]
+        [InlineData("1D41", 3000.00, 50.00, 2950.00)]
+        [InlineData("1D42", 2000.00, 1000.00, 1000.00)]
+        [InlineData("1D43", 1000.00, 500.00, 500.00)]
+        public void TestBalanceUpdateAfterWithdrawal(string id, Double destAcctBalance, Double withdrawalAmount, Double updatedBalance) {
+            _bank.AddAccount(id, AccountType.CHECKING, destAcctBalance, _bankOwner);
+            Double reportedBalance = _bank.GetAccountBalance(id);
+            Assert.True(reportedBalance == destAcctBalance, "Reported amount must be the initial amount");
+
+            _bank.Withdraw(id, withdrawalAmount);
+            reportedBalance = _bank.GetAccountBalance(id);
+            Assert.True(reportedBalance == updatedBalance, "Reported amount must be the initial amount minus the deposit amount");
+        }
+
+        [Theory]
+        [InlineData("1D51", "1D61", 3000.00, 3000.00, 50.00, 2950.00, 3050.00)]
+        [InlineData("1D52", "1D62", 2000.00, 2000.00, 1000.00, 1000.00, 3000.00)]
+        [InlineData("1D53", "1D63", 1000.00, 1000.00, 500.00, 500.00, 1500.00)]
+        public void TestBalanceUpdateAfterTransfer(string srcId, string destId, Double srcAcctBalance, Double destAcctBalance, Double transferAmount, Double srcUpdatedBalance, Double destUpdatedBalance) {
+            _bank.AddAccount(srcId, AccountType.CHECKING, srcAcctBalance, _bankOwner);
+            Double reportedBalance = _bank.GetAccountBalance(srcId);
+            Assert.True(reportedBalance == srcAcctBalance, "Reported amount must be the initial amount");
+
+            _bank.AddAccount(destId, AccountType.CHECKING, destAcctBalance, _bankOwner);
+            reportedBalance = _bank.GetAccountBalance(destId);
+            Assert.True(reportedBalance == destAcctBalance, "Reported amount must be the initial amount");
+
+            _bank.AccountTransfer(srcId, destId, transferAmount);
+            
+            Double srcReportedBalance = _bank.GetAccountBalance(srcId);
+            Double destReportedBalance = _bank.GetAccountBalance(destId);
+
+            Assert.True(srcReportedBalance == srcUpdatedBalance, "Reported amount must be the initial amount minus the transferred amount");
+            Assert.True(destReportedBalance == destUpdatedBalance, "Reported amount must be the initial amount plus the transferred amount");
+        }
     }
 }

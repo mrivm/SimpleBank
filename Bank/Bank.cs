@@ -40,7 +40,7 @@ namespace Bank
                 System.Console.WriteLine("Amount must be positive and greater than zero");
             } else if (from == to) {
                 System.Console.WriteLine("Accounts must be different");
-            } else if (!Accounts.ContainsKey(from) || Accounts.ContainsKey(to)) {
+            } else if (!Accounts.ContainsKey(from) || !Accounts.ContainsKey(to)) {
                 System.Console.WriteLine("Accounts must exist");
             } else {
                 Account srcAccount = (Account) this.Accounts[from];
@@ -93,6 +93,19 @@ namespace Bank
             }
 
             return false;
+        }
+        
+        public Double GetAccountBalance(string id) {
+            if (id.Length == 0) {
+                System.Console.WriteLine("Account ID is required");
+            } else if (!Accounts.ContainsKey(id)) {
+                System.Console.WriteLine("Account must exist");
+            } else {
+                Account acct = (Account) Accounts[id];
+                return acct.Balance;
+            }
+
+            return -1.0;
         }
     }
 }
